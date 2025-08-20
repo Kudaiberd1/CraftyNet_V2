@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import type { Post } from "./Home";
-import api from "../services/api";
+import type { Post } from "../Menu/Home";
+import api from "../../services/api";
 import { useParams } from "react-router-dom";
-import SideBar from "./NavBar";
-import formatDates from "../services/formatData";
+import SideBar from "../Menu/NavBar";
+import formatDates from "../../services/formatData";
 
 const PostPage = () => {
   const [post, setPost] = useState<Post>();

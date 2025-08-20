@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import icon from "../assets/icon.svg";
+import icon from "../../assets/icon.svg";
 import { useContext, useState } from "react";
-import { authorizedContext } from "../components/ProtectedRoute";
+import { authorizedContext } from "../../components/ProtectedRoute";
 
 const SideBar = () => {
   const [open, setOpen] = useState(false);

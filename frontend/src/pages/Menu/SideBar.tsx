@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { authorizedContext } from "../components/ProtectedRoute";
+import { authorizedContext } from "../../components/ProtectedRoute";
 import { Link } from "react-router-dom";
 
 const Aside = () => {

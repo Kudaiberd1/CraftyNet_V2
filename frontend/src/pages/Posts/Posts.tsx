@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { postContext } from "../App";
-import formatDates from "../services/formatData";
+import { postContext } from "../../App";
+import formatDates from "../../services/formatData";
 import { Link } from "react-router-dom";
 
 const Posts = () => {

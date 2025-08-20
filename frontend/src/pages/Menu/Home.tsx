@@ -1,6 +1,6 @@
 import NavBar from "./NavBar";
 import Aside from "./SideBar";
-import Posts from "./Posts";
+import Posts from "../Posts/Posts";
 
 export interface Post {
   id: number;

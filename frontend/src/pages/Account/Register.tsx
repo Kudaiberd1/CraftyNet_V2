@@ -1,4 +1,4 @@
-import Form from "../components/Form";
+import Form from "../../components/Form";
 
 const Register = () => {
   return <Form route="/api/register/" method="register" />;

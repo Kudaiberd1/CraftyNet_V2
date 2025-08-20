@@ -1,13 +1,13 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import Register from "./pages/Register";
-import Home, { type Post } from "./pages/Home";
-import Login from "./pages/Login";
+import Register from "./pages/Account/Register";
+import Home, { type Post } from "./pages/Menu/Home";
+import Login from "./pages/Account/Login";
 import NotFound from "./pages/NotFoundPage";
 import { authorizedContext } from "./components/ProtectedRoute";
 import { ACCESS_TOKEN } from "./services/constants";
 import { createContext, useEffect, useState } from "react";
 import api from "./services/api";
-import PostPage from "./pages/PostPage";
+import PostPage from "./pages/Posts/PostPage";
 
 function Logout() {
   localStorage.clear();
