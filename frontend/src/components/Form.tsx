@@ -45,7 +45,7 @@ const Form = ({ route, method }: Props) => {
 
   return (
     <div className="flex-col flex items-center">
-      <div className="box shadow mt-45 w-full max-w-lg rounded-xl box shadow mt-45 rounded-lg ">
+      <div className="box shadow sm:translate-mt-15 mt-20 w-full max-w-lg rounded-xl box shadow rounded-lg ">
         <form
           onSubmit={handleSubmit}
           className="flex-1 p-8 max-w-md mx-auto space-y-6"

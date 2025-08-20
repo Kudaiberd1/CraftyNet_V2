@@ -1,5 +1,4 @@
 import NavBar from "./NavBar";
-import Aside from "./SideBar";
 import Posts from "../Posts/Posts";
 
 export interface Post {
@@ -18,7 +17,6 @@ const Home = () => {
   return (
     <div>
       <NavBar />
-      <Aside />
       <Posts />
     </div>
   );

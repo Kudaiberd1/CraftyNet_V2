@@ -8,6 +8,7 @@ import { ACCESS_TOKEN } from "./services/constants";
 import { createContext, useEffect, useState } from "react";
 import api from "./services/api";
 import PostPage from "./pages/Posts/PostPage";
+import AddPost from "./pages/Posts/AddPost";
 
 function Logout() {
   localStorage.clear();
@@ -46,7 +47,7 @@ function App() {
         console.log(res.data);
       })
       .catch((err) => alert(err.message));
-  }, []);
+  }, [location.state]);
   //console.log(posts, "jvhduybcduij");
 
   return (
@@ -58,6 +59,7 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<RegisterandLogout />} />
           <Route path="/post/:pk" element={<PostPage />} />
+          <Route path="/addPost/" element={<AddPost />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </postContext.Provider>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Post } from "../Menu/Home";
 import api from "../../services/api";
 import { useParams } from "react-router-dom";
-import SideBar from "../Menu/NavBar";
+import OnlyNavBar from "../Menu/onlyNavBar";
 import formatDates from "../../services/formatData";
 
 const PostPage = () => {
@@ -18,7 +18,7 @@ const PostPage = () => {
 
   return (
     <>
-      <SideBar />
+      <OnlyNavBar />
       <div className="p-4 pt-25">
         <div className="flex max-w-5xl items-center mx-auto">
           <div className="shadow-lg p-5 w-full rounded">
