@@ -13,6 +13,7 @@ dist-ssr
 *.local
 env
 static
+media
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +25,6 @@ static
 *.njsproj
 *.sln
 *.sw?
+
+__pycache__
+db.sqlite3
