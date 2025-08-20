@@ -1,7 +1,8 @@
 # dependencies
 node_modules/
 
-static/
+static
+env
 
 # build outputs
 dist/
