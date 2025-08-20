@@ -19,7 +19,7 @@ class Posts(models.Model):
     time_update = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, blank=True)
     title = models.CharField(max_length=255)
-    photo = models.ImageField(upload_to="static/photos/%Y/%m/%d", default=None, blank=True, null=True, verbose_name='Image')
+    photo = models.ImageField(upload_to="posts/", default=None, blank=True, null=True, verbose_name='Image')
     likes = models.ManyToManyField(get_user_model(), related_name='liked_posts', blank=True)
     about = models.TextField(blank=True)
     post = models.TextField(blank=True)

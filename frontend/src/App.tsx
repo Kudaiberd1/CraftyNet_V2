@@ -7,6 +7,7 @@ import { authorizedContext } from "./components/ProtectedRoute";
 import { ACCESS_TOKEN } from "./services/constants";
 import { createContext, useEffect, useState } from "react";
 import api from "./services/api";
+import PostPage from "./pages/PostPage";
 
 function Logout() {
   localStorage.clear();
@@ -56,6 +57,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<RegisterandLogout />} />
+          <Route path="/post/:pk" element={<PostPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </postContext.Provider>

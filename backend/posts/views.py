@@ -9,10 +9,14 @@ from .serializers import *
 from .permissions import *
 from django.contrib.auth.models import User
 
+#User
+
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+#Posts
 
 class PostApiListView(generics.ListAPIView):
     queryset = Posts.published.all()
@@ -32,3 +36,9 @@ class PostApiDeleteView(generics.RetrieveDestroyAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsOwner, )
+
+#Post by id
+
+class GetPostApiView(generics.RetrieveAPIView):
+    queryset = Posts.objects.all()
+    serializer_class = PostSerializer
