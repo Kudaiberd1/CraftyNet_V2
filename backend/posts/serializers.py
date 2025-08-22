@@ -1,14 +1,25 @@
 from .models import *
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from profiles.serializers import ProfileSerializer
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "first_name", "last_name"]
+
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.CharField(default=serializers.CurrentUserDefault())
+    profile = ProfileSerializer()
 
     class Meta:
         model = Posts
-        fields = "__all__"
-        
+        fields = [
+            "id", "time", "time_update", "slug", "title", "photo",
+            "likes", "about", "post", "is_published", "author", "profile",
+            "author",
+        ]
+
 
 class UserSerializer(serializers.ModelSerializer):
 

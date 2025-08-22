@@ -42,3 +42,20 @@ class PostApiDeleteView(generics.RetrieveDestroyAPIView):
 class GetPostApiView(generics.RetrieveAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostSerializer
+
+#Post by author
+
+class GetAuthorPostView(generics.ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        author_id = self.kwargs.get("pk")
+        return Posts.objects.filter(author_id=author_id)
+    
+class AuthorPostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+    permission_classes = (IsOwner, )
+
+    def get_queryset(self):
+        author_id = self.kwargs.get("author_id")
+        return Posts.objects.filter(author_id=author_id)

@@ -4,7 +4,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-
+from profiles.models import Profile
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -26,6 +26,7 @@ class Posts(models.Model):
     is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]) ,Status.choices)), 
                                        default=Status.DRAFT)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='author', null=True, default=None)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="profile", default=None, null=True)
 
     objects = models.Manager()
     published = PublishedManager()

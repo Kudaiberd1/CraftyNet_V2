@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Post } from "../Menu/Home";
 import api from "../../services/api";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import OnlyNavBar from "../Menu/onlyNavBar";
 import formatDates from "../../services/formatData";
 
@@ -42,7 +42,12 @@ const PostPage = () => {
             )}
             <p className="text-right text-sm text-gray-600">
               {" "}
-              @{post?.author} Published: {formatDates(post?.time)}{" "}
+              <span className="text-blue-500">
+                <Link to={`/users/${post?.profile.username}`}>
+                  @{post?.profile.username}
+                </Link>
+              </span>{" "}
+              Published: {formatDates(post?.time)}{" "}
             </p>
           </div>
         </div>

@@ -66,12 +66,12 @@ const OnlyNavBar = () => {
                 <hr className="border-t border-gray-200" />
                 <ul className="py-1">
                   <li>
-                    <a
-                      href="#"
+                    <Link
+                      to="/my"
                       className="block px-4 py-2 text-sm hover:bg-gray-100 "
                     >
                       Settings
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <Link

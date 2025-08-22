@@ -1,5 +1,6 @@
 import NavBar from "./NavBar";
 import Posts from "../Posts/Posts";
+import type { User } from "../../App";
 
 export interface Post {
   id: number;
@@ -8,9 +9,9 @@ export interface Post {
   about: string;
   post: string;
   is_published: boolean;
-  author: string;
   time: string;
   likes: number[];
+  profile: User;
 }
 
 const Home = () => {
