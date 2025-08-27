@@ -2,11 +2,14 @@ import { Link } from "react-router-dom";
 import icon from "../../assets/icon.svg";
 import { useContext, useState } from "react";
 import { authorizedContext } from "../../components/ProtectedRoute";
+import default_image from "../../assets/default.png";
 import "flowbite";
+import { AuthContext } from "../../App";
 
 const SideBar = () => {
   const [open, setOpen] = useState(false);
   const { isAuthorized } = useContext(authorizedContext);
+  const { currentUser } = useContext(AuthContext);
   return (
     <>
       <nav className="fixed flex top-0 z-50 w-full bg-white border-b border-gray-200">
@@ -50,8 +53,8 @@ const SideBar = () => {
                 className="flex text-sm rounded-full focus:ring-4 focus:ring-gray-300"
               >
                 <img
-                  className="h-10 rounded-full"
-                  src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                  className="h-10 w-10 rounded-full"
+                  src={currentUser?.avatar ? currentUser.avatar : default_image}
                   alt="user"
                 />
               </button>
@@ -59,9 +62,13 @@ const SideBar = () => {
               {open && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-sm shadow-sm">
                   <div className="px-4 py-3">
-                    <p className="text-sm">Neil Sims</p>
+                    <p className="text-sm">
+                      {currentUser?.first_name
+                        ? currentUser.first_name
+                        : currentUser.username}
+                    </p>
                     <p className="text-sm font-medium text-gray-900 truncate">
-                      neil.sims@flowbite.com
+                      {currentUser.email}
                     </p>
                   </div>
                   <hr className="border-t border-gray-200" />

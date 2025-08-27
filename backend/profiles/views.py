@@ -9,6 +9,11 @@ from .serializers import *
 from posts.permissions import *
 from django.contrib.auth.models import User
 
+class CreateUserView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
 class ProfileApiView(generics.ListAPIView):
     queryset=Profile.objects.all()
     serializer_class=ProfileSerializer

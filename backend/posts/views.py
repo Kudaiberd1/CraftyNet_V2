@@ -8,13 +8,9 @@ from .models import *
 from .serializers import *
 from .permissions import *
 from django.contrib.auth.models import User
+        
 
-#User
-
-class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+        
 
 #Posts
 

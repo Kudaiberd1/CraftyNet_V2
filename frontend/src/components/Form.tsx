@@ -13,6 +13,7 @@ interface Props {
 
 const Form = ({ route, method }: Props) => {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,18 +26,22 @@ const Form = ({ route, method }: Props) => {
     setLoading(true);
 
     try {
-      const res = await api.post(route, { username, password });
+      const res = await api.post(route, { username, email, password });
       if (method === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
         setIsAuthorized(true);
-        navigate("/");
+        navigate("/", { state: { refresh: true } });
       } else {
         navigate("/login");
       }
     } catch (error) {
       if (error.status == 400) {
         alert("This accaount already exist!");
+      } else if (error.status == 401) {
+        alert("No active account found with the given credentials");
+      } else {
+        alert("Somthing gone wrong");
       }
     } finally {
       setLoading(false);
@@ -63,6 +68,20 @@ const Form = ({ route, method }: Props) => {
             placeholder="Username"
             className="w-full flex px-4 py-2 border border-gray-500 rounded bg-gray-100"
           />
+          {name == "Register" && (
+            <>
+              <p className="text-left block mb-2 text-sm font-medium ">
+                E-mail
+              </p>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="w-full flex px-4 py-2 border border-gray-500 rounded bg-gray-100"
+              />
+            </>
+          )}
           <p className="text-left block mb-2 text-sm font-medium ">
             Your password
           </p>

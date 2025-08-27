@@ -2,6 +2,7 @@ from .models import *
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from profiles.serializers import ProfileSerializer
+from profiles.models import Profile
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,7 +11,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()
+    profile = ProfileSerializer(read_only=True)
 
     class Meta:
         model = Posts
@@ -20,12 +21,8 @@ class PostSerializer(serializers.ModelSerializer):
             "author",
         ]
 
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ['username', 'password']
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+        request = self.context.get("request")
+        if request and hasattr(request.user, "profile"):
+            validated_data["profile"] = request.user.profile
+        return super().create(validated_data)
