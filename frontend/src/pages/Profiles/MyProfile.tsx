@@ -7,13 +7,30 @@ import formatDates, { getSiteName } from "../../services/formatData";
 import { Link, useNavigate } from "react-router-dom";
 import type { User } from "../../App";
 
+interface subscriber {
+  username: string;
+}
+
 const MyProfile = () => {
   const [profile, setProfile] = useState<User>();
   const navigate = useNavigate();
+  const [followers, setFollowers] = useState<subscriber[]>();
+  const [followings, setFollowings] = useState<subscriber[]>();
 
   useEffect(() => {
     api.get("/api/profiles/my/").then((res) => {
-      setProfile(res.data), console.log(res.data);
+      setProfile(res.data);
+      console.log(res.data);
+
+      api.get(`/api/users/followers/${res.data.username}/`).then((res) => {
+        setFollowers(res.data);
+        console.log(res.data, "Followers");
+      });
+
+      api.get(`/api/users/followings/${res.data.username}/`).then((res) => {
+        setFollowings(res.data);
+        console.log(res.data, "Followings");
+      });
     });
   }, []);
 
@@ -52,11 +69,13 @@ const MyProfile = () => {
                   </p>
                   <p>
                     {" "}
-                    0 <span className="text-sm text-gray-500">followers</span>
+                    {followers?.length ? followers?.length : 0}{" "}
+                    <span className="text-sm text-gray-500">followers</span>
                   </p>
                   <p>
                     {" "}
-                    0 <span className="text-sm text-gray-500">following</span>
+                    {followings?.length ? followings?.length : 0}{" "}
+                    <span className="text-sm text-gray-500">following</span>
                   </p>
                 </div>
               </div>

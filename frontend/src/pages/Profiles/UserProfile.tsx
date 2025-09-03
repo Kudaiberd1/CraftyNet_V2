@@ -6,22 +6,45 @@ import { getCountryName } from "../../services/constants";
 import formatDates, { getSiteName } from "../../services/formatData";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext, type User } from "../../App";
+import { CreateFollow, Unfollow } from "../Follow/Follow";
+
+interface subscriber {
+  username: string;
+}
 
 const UserProfile = () => {
-  const { currentUser } = useContext(AuthContext);
+  const [currentUser, setCurentUser] = useState<User>();
   const [profile, setProfile] = useState<User>();
   const username = useParams<{ username: string }>();
   const navigate = useNavigate();
+  const [followers, setFollowers] = useState<subscriber[]>([]);
+  const [followings, setFollowings] = useState<subscriber[]>([]);
+  const [clicked, setClicked] = useState(false);
 
   if (currentUser === null) {
     const something = 0;
-  } else if (currentUser.username == username.username) {
+  } else if (currentUser?.username == username.username) {
     navigate("/my");
   }
 
   useEffect(() => {
+    api.get("/api/profiles/my/").then((res) => {
+      setCurentUser(res.data);
+      console.log(res.data);
+    });
     api.get(`/api/profiles/${username.username}`).then((res) => {
       setProfile(res.data), console.log(res.data);
+    });
+    api.get(`/api/users/followers/${username.username}/`).then((res) => {
+      // Convert ["Kudaiberdi"] → [{ username: "Kudaiberdi" }]
+      const formatted = res.data.map((u: string) => ({ username: u }));
+      setFollowers(formatted);
+      console.log(formatted, "Followers formatted");
+    });
+    api.get(`/api/users/followings/${username.username}/`).then((res) => {
+      const formatted = res.data.map((u: string) => ({ username: u }));
+      setFollowings(formatted);
+      console.log(formatted, "Followings formatted");
     });
   }, []);
 
@@ -61,11 +84,13 @@ const UserProfile = () => {
                   </p>
                   <p>
                     {" "}
-                    0 <span className="text-sm text-gray-500">followers</span>
+                    {followers?.length ? followers?.length : 0}{" "}
+                    <span className="text-sm text-gray-500">followers</span>
                   </p>
                   <p>
                     {" "}
-                    0 <span className="text-sm text-gray-500">following</span>
+                    {followings?.length ? followings?.length : 0}{" "}
+                    <span className="text-sm text-gray-500">followings</span>
                   </p>
                 </div>
               </div>
@@ -75,10 +100,42 @@ const UserProfile = () => {
                 {" "}
                 Message{" "}
               </button>
-              <button className="flex-1 py-2 rounded-full border border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition">
-                {" "}
-                Follow{" "}
-              </button>
+              {followers.some((f) => f.username === currentUser?.username) ? (
+                <button
+                  className="flex-1 py-2 rounded-full border border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition"
+                  onClick={() => {
+                    Unfollow(profile.username);
+                    // remove current user from list immediately
+                    setFollowers(
+                      followers.filter(
+                        (f) => f.username !== currentUser?.username
+                      )
+                    );
+                    setClicked(false);
+                  }}
+                >
+                  Unfollow
+                </button>
+              ) : (
+                <button
+                  className="flex-1 py-2 rounded-full border border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition"
+                  onClick={() => {
+                    CreateFollow(profile.username);
+                    if (currentUser) {
+                      // add object, not string
+                      setFollowers([
+                        ...followers,
+                        { username: currentUser.username },
+                      ]);
+                      setClicked(true);
+                    } else {
+                      alert("You should authorize first");
+                    }
+                  }}
+                >
+                  Follow
+                </button>
+              )}
             </section>
             <section className="flex space-x-6 text-gray-500 text-sm mb-8">
               <div className="flex space-x-1 items-center">
