@@ -12,6 +12,8 @@ import AddPost from "./pages/Posts/AddPost";
 import MyProfile from "./pages/Profiles/MyProfile";
 import Profiles from "./pages/Profiles/Profiles";
 import UserProfile from "./pages/Profiles/UserProfile";
+import EditProfile from "./pages/Profiles/EditProfile";
+import EditPost, { DeletePost } from "./pages/Posts/EditPost";
 
 function Logout() {
   localStorage.clear();
@@ -101,6 +103,8 @@ function App() {
               <Route path="/register" element={<RegisterandLogout />} />
               <Route path="/post/:pk" element={<PostPage />} />
               <Route path="/addPost/" element={<AddPost />} />
+              <Route path="/post/:pk/edit" element={<EditPost />} />
+              <Route path="/post/:pk/delete" element={<DeletePost />} />
               <Route
                 path="/my"
                 element={
@@ -112,6 +116,7 @@ function App() {
               />
               <Route path="/users" element={<Profiles />} />
               <Route path="/users/:username" element={<UserProfile />} />
+              <Route path="/my/edit" element={<EditProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </userContext.Provider>

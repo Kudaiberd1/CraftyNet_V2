@@ -30,14 +30,14 @@ class PostMiniSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(source="user.first_name")
-    last_name = serializers.CharField(source="user.last_name")
+    first_name = serializers.CharField(source="user.first_name", allow_blank=True, required=False)
+    last_name = serializers.CharField(source="user.last_name", allow_blank=True, required=False)
     username = serializers.CharField(source="user.username")
     email = serializers.CharField(source="user.email")
     is_staff = serializers.CharField(source="user.is_staff", read_only=True)
     date_joined = serializers.DateTimeField(source="user.date_joined", read_only=True)
     posts = PostMiniSerializer(many=True, read_only=True, source="profile")
-    country = CountryField()
+    country = CountryField(allow_blank=True, required=False)
 
     class Meta:
         model = Profile
@@ -47,9 +47,19 @@ class ProfileSerializer(serializers.ModelSerializer):
         from django.core.validators import URLValidator
         from django.core.exceptions import ValidationError
 
+        if not value:  # allow blank values
+            return value
+
         validator = URLValidator()
         try:
             validator(value)
         except ValidationError:
             raise serializers.ValidationError("Invalid URL")
         return value
+    def update(self, instance, validated_data):
+        # Extract and apply nested user data
+        user_data = validated_data.pop("user", {})
+        for attr, value in user_data.items():
+            setattr(instance.user, attr, value)
+        instance.user.save()
+        return super().update(instance, validated_data)

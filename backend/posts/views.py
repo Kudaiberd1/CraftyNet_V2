@@ -26,7 +26,7 @@ class PostApiCreateView(generics.ListCreateAPIView):
 class PostApiUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsOwner, )
+    permission_classes = (IsAuthenticated ,IsOwner, )
 
 class PostApiDeleteView(generics.RetrieveDestroyAPIView):
     queryset = Posts.objects.all()

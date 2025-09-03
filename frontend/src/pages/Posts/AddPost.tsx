@@ -48,7 +48,7 @@ const AddPost = () => {
       <SideBar />
       <div className="p-4 sm:ml-64">
         <div className="p-4 mt-14">
-          <div className="items-center max-w-xl mx-auto">
+          <div className="items-center max-w-xl mx-auto shadow-lg px-12 py-6">
             <form onSubmit={handleSubmit} className="w-full">
               <h1 className="text-center text-2xl font-bold pb-6">
                 {" "}
