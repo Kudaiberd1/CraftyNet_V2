@@ -20,7 +20,7 @@ const PostPage = () => {
     <>
       <OnlyNavBar />
       <div className="p-4 pt-25">
-        <div className="flex max-w-5xl items-center mx-auto">
+        <div className="max-w-5xl items-center mx-auto">
           <div className="shadow-lg p-5 w-full rounded">
             <h1 className="text-center font-semibold text-2xl pt-5">
               {" "}
@@ -49,6 +49,12 @@ const PostPage = () => {
               </span>{" "}
               Published: {formatDates(post?.time)}{" "}
             </p>
+          </div>
+          <div className="shadow-lg p-5 w-full rounded mt-10">
+            <p className="text-lg font-bold text-center">Comment</p>
+            <div className="p-4">
+              <div></div>
+            </div>
           </div>
         </div>
       </div>

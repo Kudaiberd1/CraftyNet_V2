@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'posts.apps.PostsConfig',
     'profiles.apps.ProfilesConfig',
     'following.apps.FollowingConfig',
+    'comment.apps.CommentConfig',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
