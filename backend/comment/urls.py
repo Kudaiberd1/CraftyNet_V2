@@ -6,6 +6,5 @@ from django.conf.urls.static import static
 from .views import *
 
 urlpatterns = [
-    path('api/comment/<int:pk>/'),
-    path('api/comment/<int:pk>/delete/<int:pk>/')
+    path("api/posts/<int:post_id>/comments/", CommentApiView.as_view(), name="comments"),
 ]

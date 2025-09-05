@@ -19,10 +19,12 @@ from django.urls import include, path
 import posts.urls
 import profiles.urls
 import following.urls
+import comment.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(posts.urls)),
     path('', include(profiles.urls)),
     path('', include(following.urls)),
+    path('', include(comment.urls)),
 ]
