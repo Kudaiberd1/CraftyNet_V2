@@ -28,8 +28,8 @@ It is built with modern technologies to provide a smooth, responsive, and secure
 
 ### 1. Clone the repository
 ```
-git clone https://github.com/your-username/crafty-net.git
-cd crafty-net
+git clone https://github.com/your-username/CraftyNet_V2.git
+cd CraftyNet_V2
 ```
 
 ### 2. Backend setup
