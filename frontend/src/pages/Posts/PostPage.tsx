@@ -10,7 +10,7 @@ interface User {
   id: number;
   username: string;
 }
-
+  
 interface Comment {
   id: number;
   sender: User;

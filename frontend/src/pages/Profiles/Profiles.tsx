@@ -6,17 +6,6 @@ import { UserCard } from "./UserCard";
 const Profiles = () => {
   const { users } = useContext(userContext);
 
-  // keep track of who you follow (mock state for now)
-  const [following, setFollowing] = useState<number[]>([]);
-
-  const toggleFollow = (userId: number) => {
-    if (following.includes(userId)) {
-      setFollowing(following.filter((id) => id !== userId)); // unfollow
-    } else {
-      setFollowing([...following, userId]); // follow
-    }
-  };
-
   return (
     <>
       <SideBar />
