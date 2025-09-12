@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'following.apps.FollowingConfig',
     'comment.apps.CommentConfig',
+    'like.apps.LikeConfig',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
