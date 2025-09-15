@@ -29,6 +29,8 @@ const PostPage = () => {
   const [newComment, setNewComment] = useState("");
   const { posts } = useContext(postContext);
   const { setPosts } = useContext(postContext);
+  const [replyContent, setReplyContent] = useState("");
+  const [replyTo, setReplyTo] = useState<number | null>(null);
 
   useEffect(() => {
     api
@@ -98,6 +100,29 @@ const PostPage = () => {
       const res = await api.get(`/api/posts/${id.pk}/`);
       setPost(res.data);
       setPosts(posts.map((p) => (p.id === res.data.id ? res.data : p)));
+      console.error(err);
+    }
+  };
+
+  const handleReplySubmit = async (e: React.FormEvent, parentId: number) => {
+    e.preventDefault();
+    if (!replyContent.trim()) return;
+
+    try {
+      await api.post(`/api/posts/${id.pk}/comments/`, {
+        content: replyContent,
+        parent: parentId,
+      });
+      setReplyContent("");
+      setReplyTo(null);
+      const res = await api.get(`/api/posts/${id.pk}/comments/`);
+      setComments(res.data);
+      setPosts(
+        posts.map((p) =>
+          p.id === post?.id ? { ...p, comments_count: p.comments_count + 1 } : p
+        )
+      );
+    } catch (err) {
       console.error(err);
     }
   };
@@ -183,17 +208,27 @@ const PostPage = () => {
                               .replace(",", "")}{" "}
                           </span>{" "}
                         </p>
-                        {currentUser?.username == comment.sender.username && (
-                          <p>
+                        <div className="flex">
+                          {currentUser?.username == comment.sender.username && (
+                            <p>
+                              <button
+                                onClick={() => handleClick(comment.id)}
+                                className="text-red-500 text-sm"
+                              >
+                                {" "}
+                                Delete{" "}
+                              </button>
+                            </p>
+                          )}
+                          {currentUser && (
                             <button
-                              onClick={() => handleClick(comment.id)}
-                              className="text-red-500 text-sm"
+                              onClick={() => setReplyTo(comment.id)}
+                              className="text-blue-500 text-sm ml-3"
                             >
-                              {" "}
-                              Delete{" "}
+                              Reply
                             </button>
-                          </p>
-                        )}
+                          )}
+                        </div>
                       </div>
                       <p className="font-sans text-gray-900 text-sm">
                         {" "}
@@ -229,6 +264,26 @@ const PostPage = () => {
                             </p>
                           </>
                         ))}
+                        {replyTo === comment.id && (
+                          <form
+                            onSubmit={(e) => handleReplySubmit(e, comment.id)}
+                            className="ml-5 mt-2"
+                          >
+                            <textarea
+                              rows={2}
+                              value={replyContent}
+                              onChange={(e) => setReplyContent(e.target.value)}
+                              placeholder="Write a reply..."
+                              className="w-full rounded-xl border p-2 text-sm"
+                            />
+                            <button
+                              type="submit"
+                              className="mt-1 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-xl text-sm"
+                            >
+                              Post Reply
+                            </button>
+                          </form>
+                        )}
                       </div>
                     </div>
                   </>
