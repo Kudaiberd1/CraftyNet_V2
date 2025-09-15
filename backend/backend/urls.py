@@ -21,6 +21,7 @@ import profiles.urls
 import following.urls
 import comment.urls
 import like.urls
+import message.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +30,5 @@ urlpatterns = [
     path('', include(following.urls)),
     path('', include(comment.urls)),
     path('', include(like.urls)),
+    path('', include(message.urls)),
 ]
