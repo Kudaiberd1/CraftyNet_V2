@@ -4,6 +4,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from like.models import Like
 from profiles.models import Profile
 
 class PublishedManager(models.Manager):
@@ -20,7 +21,7 @@ class Posts(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True, blank=True)
     title = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="posts/", default=None, blank=True, null=True, verbose_name='Image')
-    likes = models.ManyToManyField(get_user_model(), related_name='liked_posts', blank=True)
+    likes_count = models.PositiveIntegerField(default=0)
     about = models.TextField(blank=True)
     post = models.TextField(blank=True)
     is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]) ,Status.choices)), 

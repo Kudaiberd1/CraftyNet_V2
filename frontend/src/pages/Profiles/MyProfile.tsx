@@ -16,6 +16,7 @@ const MyProfile = () => {
   const navigate = useNavigate();
   const [followers, setFollowers] = useState<subscriber[]>();
   const [followings, setFollowings] = useState<subscriber[]>();
+  const [comments, setComments] = useState<Comment[]>();
 
   useEffect(() => {
     api.get("/api/profiles/my/").then((res) => {
@@ -31,6 +32,13 @@ const MyProfile = () => {
         setFollowings(res.data);
         console.log(res.data, "Followings");
       });
+      api
+        .get(`/api/posts/${id.pk}/comments/`)
+        .then((res) => {
+          setComments(res.data);
+          console.log(res.data, "comment");
+        })
+        .catch((err) => alert(err));
     });
   }, []);
 
@@ -224,7 +232,7 @@ const MyProfile = () => {
                                 d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"
                               />
                             </svg>
-                            <span>0</span>
+                            <span>{post.comments_count}</span>
                           </button>
                         </Link>
                         <Link to={`/post/${post.id}/edit`}>

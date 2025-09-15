@@ -4,13 +4,13 @@ import api from "../../services/api";
 import { Link, useParams } from "react-router-dom";
 import OnlyNavBar from "../Menu/onlyNavBar";
 import formatDates from "../../services/formatData";
-import { AuthContext } from "../../App";
+import { postContext } from "../../App";
 
 interface User {
   id: number;
   username: string;
 }
-  
+
 interface Comment {
   id: number;
   sender: User;
@@ -22,11 +22,13 @@ interface Comment {
 }
 
 const PostPage = () => {
-  const { currentUser } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = useState(null);
   const [post, setPost] = useState<Post>();
   const id = useParams<{ pk: string }>();
   const [comments, setComments] = useState<Comment[]>();
   const [newComment, setNewComment] = useState("");
+  const { posts } = useContext(postContext);
+  const { setPosts } = useContext(postContext);
 
   useEffect(() => {
     api
@@ -40,6 +42,9 @@ const PostPage = () => {
         console.log(res.data, "comment");
       })
       .catch((err) => alert(err));
+
+    api.get(`/api/post/${id.pk}/likes/`).then((res) => console.log(res.data));
+    api.get("/api/profiles/my/").then((res) => setCurrentUser(res.data));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,6 +58,11 @@ const PostPage = () => {
       setNewComment("");
       const res = await api.get(`/api/posts/${id.pk}/comments/`);
       setComments(res.data);
+      setPosts(
+        posts.map((p) =>
+          p.id === post?.id ? { ...p, comments_count: p.comments_count + 1 } : p
+        )
+      );
     } catch (err) {
       console.error(err);
     }
@@ -65,7 +75,29 @@ const PostPage = () => {
       });
       const res = await api.get(`/api/posts/${id.pk}/comments/`);
       setComments(res.data);
+      setPosts(
+        posts.map((p) =>
+          p.id === post?.id ? { ...p, comments_count: p.comments_count - 1 } : p
+        )
+      );
     } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleClickLike = async () => {
+    try {
+      await api.post(`/api/user/${currentUser.username}/post/${id.pk}/likes/`);
+      const res = await api.get(`/api/posts/${id.pk}/`);
+      setPost(res.data);
+      setPosts(posts.map((p) => (p.id === res.data.id ? res.data : p)));
+    } catch (err) {
+      await api.delete(
+        `/api/user/${currentUser.username}/post/${id.pk}/likes/`
+      );
+      const res = await api.get(`/api/posts/${id.pk}/`);
+      setPost(res.data);
+      setPosts(posts.map((p) => (p.id === res.data.id ? res.data : p)));
       console.error(err);
     }
   };
@@ -94,15 +126,35 @@ const PostPage = () => {
                 dangerouslySetInnerHTML={{ __html: post.post }}
               />
             )}
-            <p className="text-right text-sm text-gray-600">
-              {" "}
-              <span className="text-blue-500">
-                <Link to={`/users/${post?.profile.username}`}>
-                  @{post?.profile.username}
-                </Link>
-              </span>{" "}
-              Published: {formatDates(post?.time)}{" "}
-            </p>
+            <div className="flex items-center space-x-1 hover:text-red-500 transition cursor-pointer py-2 justify-between">
+              <div className="flex" onClick={handleClickLike}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4.318 6.318a5.5 5.5 0 017.778 0L12 6.94l-.096-.096a5.5 5.5 0 017.778 7.778L12 21l-7.682-7.682a5.5 5.5 0 010-7.778z"
+                  />
+                </svg>
+                <span className="">{post?.likes.length}</span>
+              </div>
+
+              <p className="text-right text-sm text-gray-600">
+                {" "}
+                <span className="text-blue-500">
+                  <Link to={`/users/${post?.profile.username}`}>
+                    @{post?.profile.username}
+                  </Link>
+                </span>{" "}
+                Published: {formatDates(post?.time)}{" "}
+              </p>
+            </div>
           </div>
           <div className="shadow-lg p-5 w-full rounded mt-10">
             <div className="p-5">
@@ -131,7 +183,7 @@ const PostPage = () => {
                               .replace(",", "")}{" "}
                           </span>{" "}
                         </p>
-                        {currentUser.username == comment.sender.username && (
+                        {currentUser?.username == comment.sender.username && (
                           <p>
                             <button
                               onClick={() => handleClick(comment.id)}

@@ -12,13 +12,14 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
+    comments_count = serializers.IntegerField(source='comments.count', read_only=True)
 
     class Meta:
         model = Posts
         fields = [
             "id", "time", "time_update", "slug", "title", "photo",
             "likes", "about", "post", "is_published", "author", "profile",
-            "author",
+            "author", "comments_count"
         ]
 
     def create(self, validated_data):

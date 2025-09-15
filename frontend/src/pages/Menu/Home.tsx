@@ -12,6 +12,7 @@ export interface Post {
   time: string;
   likes: number[];
   profile: User;
+  comments_count: number;
 }
 
 const Home = () => {

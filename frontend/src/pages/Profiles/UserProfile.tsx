@@ -248,7 +248,7 @@ const UserProfile = () => {
                                 d="M4.318 6.318a5.5 5.5 0 017.778 0L12 6.94l-.096-.096a5.5 5.5 0 017.778 7.778L12 21l-7.682-7.682a5.5 5.5 0 010-7.778z"
                               />
                             </svg>
-                            <span>{post.likes.length}</span>
+                            <span>{post.likes_count}</span>
                           </button>
                         </Link>
                         <Link to={`/post/${post.id}`}>
@@ -267,7 +267,7 @@ const UserProfile = () => {
                                 d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"
                               />
                             </svg>
-                            <span>0</span>
+                            <span>{post.comments_count}</span>
                           </button>
                         </Link>
                       </footer>

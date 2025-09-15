@@ -73,22 +73,15 @@ function App() {
     if (localStorage.getItem(ACCESS_TOKEN)) {
       setIsAuthorized(true);
     }
-    api
-      .get("/api/posts/")
-      .then((res) => {
-        setPosts(res.data);
-        console.log(res.data);
-      })
-      .catch((err) => alert(err.message));
-    api
-      .get("/api/profiles/")
-      .then((res) => setUsers(res.data))
-      .catch((err) => alert(err.message));
-    api
-      .get("/api/profiles/my/")
-      .then((res) => setCurrentUser(res.data))
-      .catch(() => setCurrentUser(null));
-  }, [location.state]);
+    api.get("/api/posts/").then((res) => {
+      setPosts(res.data);
+      console.log(res.data);
+    });
+    //.catch((err) => alert(err.message));
+    api.get("/api/profiles/").then((res) => setUsers(res.data));
+    //.catch((err) => alert(err.message));
+    api.get("/api/profiles/my/").then((res) => setCurrentUser(res.data));
+  }, []);
   //console.log(posts, "jvhduybcduij");
 
   return (

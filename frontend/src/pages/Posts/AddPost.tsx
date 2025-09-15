@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from "react";
+import { useContext, useState, type FormEvent } from "react";
 import SideBar from "../Menu/NavBar";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import { postContext } from "../../App";
 
 interface Props {
   title: string;
@@ -19,6 +20,9 @@ const AddPost = () => {
     post: "",
     is_published: false,
   });
+
+  const { setPosts } = useContext(postContext);
+  const { posts } = useContext(postContext);
   const navigate = useNavigate();
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -38,7 +42,8 @@ const AddPost = () => {
       })
       .then(() => {
         alert("Successfully posted");
-        navigate("/", { state: { refresh: true } });
+        setPosts([newPost as any, ...posts]);
+        navigate("/");
       })
       .catch((err) => console.log(err));
   };
