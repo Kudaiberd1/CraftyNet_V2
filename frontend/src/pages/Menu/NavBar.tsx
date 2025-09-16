@@ -5,6 +5,7 @@ import { authorizedContext } from "../../components/ProtectedRoute";
 import default_image from "../../assets/default.png";
 import "flowbite";
 import { AuthContext } from "../../App";
+import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
 
 const SideBar = () => {
   const [open, setOpen] = useState(false);
@@ -155,6 +156,27 @@ const SideBar = () => {
                   0
                 </span>
               </a>
+            </li>
+            <li>
+              <Link
+                to="/messages"
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
+              >
+                <svg
+                  className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.125 3C2.952 3 2 3.952 2 5.125v9.75c0 1.173.952 2.125 2.125 2.125H6v3.192c0 .86 1.041 1.293 1.652.683L11.75 17h8.125c1.173 0 2.125-.952 2.125-2.125v-9.75C22 3.952 21.048 3 19.875 3h-15.75z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="flex-1 ms-3 whitespace-nowrap">Messages</span>
+              </Link>
             </li>
             <li>
               <Link

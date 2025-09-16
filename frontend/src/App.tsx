@@ -14,6 +14,7 @@ import Profiles from "./pages/Profiles/Profiles";
 import UserProfile from "./pages/Profiles/UserProfile";
 import EditProfile from "./pages/Profiles/EditProfile";
 import EditPost, { DeletePost } from "./pages/Posts/EditPost";
+import DirectMessages from "./pages/DirectMessages/DirectMessages";
 
 function Logout() {
   localStorage.clear();
@@ -61,11 +62,14 @@ export const userContext = createContext<UserContextType>({
 
 export const AuthContext = createContext<any>(null);
 
+export const SelectedMessageContext = createContext<any>(null);
+
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [selected, setSelected] = useState(0);
 
   const location = useLocation();
 
@@ -78,7 +82,9 @@ function App() {
       console.log(res.data);
     });
     //.catch((err) => alert(err.message));
-    api.get("/api/profiles/").then((res) => setUsers(res.data));
+    api.get("/api/profiles/").then((res) => {
+      setUsers(res.data), console.log(res.data, "Useerererer");
+    });
     //.catch((err) => alert(err.message));
     api.get("/api/profiles/my/").then((res) => setCurrentUser(res.data));
   }, []);
@@ -89,29 +95,32 @@ function App() {
       <AuthContext.Provider value={{ currentUser, setCurrentUser }}>
         <postContext.Provider value={{ posts: posts || [], setPosts }}>
           <userContext.Provider value={{ users: users || [], setUsers }}>
-            <Routes key={location.pathname}>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/register" element={<RegisterandLogout />} />
-              <Route path="/post/:pk" element={<PostPage />} />
-              <Route path="/addPost/" element={<AddPost />} />
-              <Route path="/post/:pk/edit" element={<EditPost />} />
-              <Route path="/post/:pk/delete" element={<DeletePost />} />
-              <Route
-                path="/my"
-                element={
-                  <ProtectedRoute>
-                    {" "}
-                    <MyProfile />{" "}
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/users" element={<Profiles />} />
-              <Route path="/users/:username" element={<UserProfile />} />
-              <Route path="/my/edit" element={<EditProfile />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <SelectedMessageContext.Provider value={{ selected, setSelected }}>
+              <Routes key={location.pathname}>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/register" element={<RegisterandLogout />} />
+                <Route path="/post/:pk" element={<PostPage />} />
+                <Route path="/addPost/" element={<AddPost />} />
+                <Route path="/post/:pk/edit" element={<EditPost />} />
+                <Route path="/post/:pk/delete" element={<DeletePost />} />
+                <Route path="/messages" element={<DirectMessages />} />
+                <Route
+                  path="/my"
+                  element={
+                    <ProtectedRoute>
+                      {" "}
+                      <MyProfile />{" "}
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/users" element={<Profiles />} />
+                <Route path="/users/:username" element={<UserProfile />} />
+                <Route path="/my/edit" element={<EditProfile />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SelectedMessageContext.Provider>
           </userContext.Provider>
         </postContext.Provider>
       </AuthContext.Provider>

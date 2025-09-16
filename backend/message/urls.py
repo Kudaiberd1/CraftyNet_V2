@@ -7,4 +7,5 @@ from .views import *
 
 urlpatterns = [
     path("api/message/<username>/", MessageApiView.as_view(), name="message_api_view"),
+    path("api/messages/", UserMessagesView.as_view(), name="user_messages_view"),
 ]

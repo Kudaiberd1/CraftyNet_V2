@@ -5,7 +5,7 @@ import api from "../../services/api";
 import { getCountryName } from "../../services/constants";
 import formatDates, { getSiteName } from "../../services/formatData";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AuthContext, type User } from "../../App";
+import { AuthContext, SelectedMessageContext, type User } from "../../App";
 import { CreateFollow, Unfollow } from "../Follow/Follow";
 
 interface subscriber {
@@ -20,6 +20,7 @@ const UserProfile = () => {
   const [followers, setFollowers] = useState<subscriber[]>([]);
   const [followings, setFollowings] = useState<subscriber[]>([]);
   const [clicked, setClicked] = useState(false);
+  const { selected, setSelected } = useContext(SelectedMessageContext);
 
   if (currentUser === null) {
     const something = 0;
@@ -96,7 +97,13 @@ const UserProfile = () => {
               </div>
             </div>
             <section className="flex space-x-4 mb-8 pt-8">
-              <button className="flex-1 py-2 rounded-full border border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition">
+              <button
+                onClick={() => {
+                  setSelected(profile?.id);
+                  navigate("/messages");
+                }}
+                className="flex-1 py-2 rounded-full border border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition"
+              >
                 {" "}
                 Message{" "}
               </button>

@@ -38,6 +38,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     date_joined = serializers.DateTimeField(source="user.date_joined", read_only=True)
     posts = PostMiniSerializer(many=True, read_only=True, source="profile")
     country = CountryField(allow_blank=True, required=False)
+    id = serializers.IntegerField(source="user.id")
 
     class Meta:
         model = Profile
