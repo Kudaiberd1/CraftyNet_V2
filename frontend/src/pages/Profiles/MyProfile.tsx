@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { getCountryName } from "../../services/constants";
 import formatDates, { getSiteName } from "../../services/formatData";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import type { User } from "../../App";
 
 interface subscriber {
@@ -32,13 +32,6 @@ const MyProfile = () => {
         setFollowings(res.data);
         console.log(res.data, "Followings");
       });
-      api
-        .get(`/api/posts/${id.pk}/comments/`)
-        .then((res) => {
-          setComments(res.data);
-          console.log(res.data, "comment");
-        })
-        .catch((err) => alert(err));
     });
   }, []);
 
@@ -213,7 +206,7 @@ const MyProfile = () => {
                                 d="M4.318 6.318a5.5 5.5 0 017.778 0L12 6.94l-.096-.096a5.5 5.5 0 017.778 7.778L12 21l-7.682-7.682a5.5 5.5 0 010-7.778z"
                               />
                             </svg>
-                            <span>{post.likes.length}</span>
+                            <span>{post.likes_count}</span>
                           </button>
                         </Link>
                         <Link to={`/post/${post.id}`}>

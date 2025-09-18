@@ -22,6 +22,7 @@ import following.urls
 import comment.urls
 import like.urls
 import message.urls
+import chatdemo.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +32,5 @@ urlpatterns = [
     path('', include(comment.urls)),
     path('', include(like.urls)),
     path('', include(message.urls)),
+    path("", include("chatdemo.urls")),
 ]

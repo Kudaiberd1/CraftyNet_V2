@@ -15,6 +15,7 @@ import UserProfile from "./pages/Profiles/UserProfile";
 import EditProfile from "./pages/Profiles/EditProfile";
 import EditPost, { DeletePost } from "./pages/Posts/EditPost";
 import DirectMessages from "./pages/DirectMessages/DirectMessages";
+import ChatDemo from "./pages/DirectMessages/Chat";
 
 function Logout() {
   localStorage.clear();
@@ -106,6 +107,7 @@ function App() {
                 <Route path="/post/:pk/edit" element={<EditPost />} />
                 <Route path="/post/:pk/delete" element={<DeletePost />} />
                 <Route path="/messages" element={<DirectMessages />} />
+                <Route path="/chat" element={<ChatDemo />} />
                 <Route
                   path="/my"
                   element={
