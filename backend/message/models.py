@@ -1,6 +1,7 @@
 from django.db import models
 
 class Message(models.Model):
+    room = models.CharField(max_length=100, db_index=True)
     sender = models.ForeignKey('auth.User', related_name='sent_messages', on_delete=models.CASCADE)
     recipient = models.ForeignKey('auth.User', related_name='received_messages', on_delete=models.CASCADE)
     content = models.TextField()

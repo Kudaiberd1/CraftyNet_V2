@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/api";
 
 export default function Chat() {
@@ -9,28 +9,24 @@ export default function Chat() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    // Fetch past messages
+    const roomId = "1-2";
 
-    api.get("http://localhost:8000/chat-messages/").then((res) => {
-      console.log(res);
-      const data = res.data.results || res.data; // handle both paginated & non
+    // Fetch past messages
+    api.get(`http://localhost:8000/chat-messages/`).then((res) => {
+      const data = res.data.results || res.data;
       if (Array.isArray(data)) {
-        const formatted = data.map((msg: any) => ({
-          message: msg.content,
-          username: msg.sender,
-          timestamp: msg.timestamp,
-        }));
-        setMessages(formatted);
+        setMessages(
+          data.map((msg: any) => ({
+            message: msg.content,
+            username: msg.sender,
+            timestamp: msg.timestamp,
+          }))
+        );
       }
     });
 
-    console.log(messages, "messages");
-
-    // Connect WebSocket
     const token = localStorage.getItem("access");
-    const ws = new WebSocket(
-      `ws://localhost:8000/ws/chat/testroom/?token=${token}`
-    );
+    const ws = new WebSocket(`ws://localhost:8000/ws/chat/1/2/?token=${token}`);
     setSocket(ws);
 
     ws.onmessage = (event) => {
@@ -54,14 +50,14 @@ export default function Chat() {
       <div
         style={{
           border: "1px solid #ccc",
-          padding: "10px",
-          height: "200px",
+          padding: 10,
+          height: 200,
           overflowY: "scroll",
         }}
       >
         {messages.map((msg, i) => (
           <div key={i}>
-            <b>{msg.username || "Anonymous"}:</b> {msg.message}{" "}
+            <b>{msg.username || "Anonymous"}:</b> {msg.message}
             {msg.timestamp && (
               <small>({new Date(msg.timestamp).toLocaleTimeString()})</small>
             )}

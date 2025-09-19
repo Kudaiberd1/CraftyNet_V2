@@ -30,6 +30,7 @@ const DirectMessages = () => {
   const [users, setUsers] = useState<User[]>();
   const { selected, setSelected } = useContext(SelectedMessageContext);
   const [message, setMessage] = useState<String>();
+  const form = "";
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -78,6 +79,7 @@ const DirectMessages = () => {
       .post(`/api/message/${selected}/`, formData)
       .then((res) => {
         setMessaged((prev) => [...prev, res.data]);
+        setMessage("");
       })
       .catch((err) => console.log(err));
   };
@@ -238,6 +240,7 @@ const DirectMessages = () => {
                   <input
                     onChange={(e) => setMessage(e.target.value)}
                     type="text"
+                    value={message || form}
                     placeholder="Type your message..."
                     className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
