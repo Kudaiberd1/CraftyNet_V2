@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 
 export default function Chat() {
@@ -7,6 +7,7 @@ export default function Chat() {
   >([]);
   const [input, setInput] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const roomId = "1-2";
@@ -43,6 +44,13 @@ export default function Chat() {
       setInput("");
     }
   };
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <div>
@@ -54,6 +62,7 @@ export default function Chat() {
           height: 200,
           overflowY: "scroll",
         }}
+        id="scroll-div"
       >
         {messages.map((msg, i) => (
           <div key={i}>

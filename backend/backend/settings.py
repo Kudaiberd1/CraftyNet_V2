@@ -211,7 +211,17 @@ CHANNEL_LAYERS = {
 }
 
 # CORS (for local dev)
-CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-CORS_ALLOW_HEADERS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-requested-with',
+    'accept',
+    'origin',
+    'user-agent',
+    'dnt',
+    'cache-control',
+    'x-csrftoken',
+]
 CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]

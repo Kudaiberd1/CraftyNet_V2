@@ -88,7 +88,10 @@ function App() {
     });
     //.catch((err) => alert(err.message));
     api.get("/api/profiles/my/").then((res) => setCurrentUser(res.data));
-  }, []);
+    if (location.state?.refresh) {
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   //console.log(posts, "jvhduybcduij");
 
   return (
