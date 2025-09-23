@@ -16,6 +16,7 @@ import EditProfile from "./pages/Profiles/EditProfile";
 import EditPost, { DeletePost } from "./pages/Posts/EditPost";
 import DirectMessages from "./pages/DirectMessages/DirectMessages";
 import ChatDemo from "./pages/DirectMessages/Chat";
+import Inbox from "./pages/Inbox/Inbox";
 
 function Logout() {
   localStorage.clear();
@@ -117,6 +118,15 @@ function App() {
                     <ProtectedRoute>
                       {" "}
                       <MyProfile />{" "}
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/inbox"
+                  element={
+                    <ProtectedRoute>
+                      {" "}
+                      <Inbox />{" "}
                     </ProtectedRoute>
                   }
                 />

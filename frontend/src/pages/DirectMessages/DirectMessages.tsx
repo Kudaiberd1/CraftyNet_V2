@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { SelectedMessageContext } from "../../App";
 import api from "../../services/api";
 import { formatDate } from "../../services/formatData";
-import { format } from "date-fns"; // install: npm install date-fns
+import { format } from "date-fns";
 import { Link } from "react-router-dom";
 
 interface Message {
@@ -38,6 +38,7 @@ const DirectMessages = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const messageQueueRef = useRef<OutgoingMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [clicked, setClicked] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -137,9 +138,34 @@ const DirectMessages = () => {
   const selectedUser = users.find((u) => u.id === selected);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen relative">
+      {/* Sidebar toggle button (mobile only) */}
+      <button
+        type="button"
+        onClick={() => setClicked(!clicked)}
+        className="absolute top-4 left-4 z-20 inline-flex items-center py-2 px-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 bg-white shadow"
+      >
+        <span className="sr-only">Open sidebar</span>
+        <svg
+          className="w-6 h-6"
+          aria-hidden="true"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clipRule="evenodd"
+            fillRule="evenodd"
+            d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+          ></path>
+        </svg>
+      </button>
+
       {/* Sidebar */}
-      <div className="h-screen p-4 max-w-sm w-full border-r border-gray-300">
+      <div
+        className={`h-screen p-4 max-w-sm w-64 border-r border-gray-300 bg-white absolute sm:static sm:translate-x-0 transform top-0 left-0 z-10 transition-transform duration-300
+          ${clicked ? "translate-x-0" : "-translate-x-full"}`}
+      >
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Messages</h1>
           <div className="flex space-x-4 p-1">
@@ -178,7 +204,10 @@ const DirectMessages = () => {
             .map((user) => (
               <div
                 key={user.id}
-                onClick={() => setSelected(user.id)}
+                onClick={() => {
+                  setSelected(user.id);
+                  setClicked(false); // close sidebar on mobile
+                }}
                 className={`flex mb-4 items-center p-2 rounded-lg cursor-pointer ${
                   selected === user.id ? "bg-gray-100" : ""
                 }`}
@@ -217,15 +246,14 @@ const DirectMessages = () => {
           </div>
         )}
 
-        <div className="p-4 h-[78vh] overflow-y-auto flex-1">
+        {/* Messages */}
+        <div className="p-4 flex-1 overflow-y-auto">
           {messages.map((msg, index) => {
             const msgDate = format(new Date(msg.timestamp), "MMMM d");
-
             const prevDate =
               index > 0
                 ? format(new Date(messages[index - 1].timestamp), "MMMM d")
                 : null;
-
             const showDate = msgDate !== prevDate;
 
             return (
@@ -264,9 +292,9 @@ const DirectMessages = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
+        {/* Input (fixed at bottom) */}
         {selected !== 0 && (
-          <div className="p-4">
+          <div className="p-4 border-t bg-white">
             <form className="flex items-center" onSubmit={handleSubmit}>
               <input
                 value={messageInput}
