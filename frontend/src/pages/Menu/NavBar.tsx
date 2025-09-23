@@ -1,17 +1,26 @@
 import { Link } from "react-router-dom";
 import icon from "../../assets/icon.svg";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { authorizedContext } from "../../components/ProtectedRoute";
 import default_image from "../../assets/default.png";
 import "flowbite";
 import { AuthContext } from "../../App";
-import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
+import api from "../../services/api";
 
 const SideBar = () => {
   const [open, setOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { isAuthorized } = useContext(authorizedContext);
   const { currentUser } = useContext(AuthContext);
+  const [inbox, setInbox] = useState(0);
+
+  useEffect(() => {
+    api.get("/api/inbox/len/").then((res) => {
+      setInbox(res.data);
+      //console.log(res.data, "Inbox");
+    });
+  }, []);
+
   return (
     <>
       <nav className="fixed flex top-0 z-50 w-full bg-white border-b border-gray-200">
@@ -153,7 +162,7 @@ const SideBar = () => {
                 </svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">Inbox</span>
                 <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
-                  0
+                  {inbox}
                 </span>
               </Link>
             </li>

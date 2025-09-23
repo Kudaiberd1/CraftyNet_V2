@@ -15,7 +15,6 @@ class MessageApiView(APIView):
 
     def get(self, request, username: str, format=None):
         messages = Message.objects.filter(Q(sender=request.user, recipient__id=username) | Q(sender__id=username, recipient=request.user)).order_by("timestamp")
-        print(messages)
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
 

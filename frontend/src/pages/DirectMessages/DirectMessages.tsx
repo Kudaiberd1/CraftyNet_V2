@@ -272,6 +272,7 @@ const DirectMessages = () => {
                   className={`mb-4 ${
                     msg.sender === currentUser?.id ? "flex justify-end" : ""
                   }`}
+                  onContextMenu={() => alert("Right click!")}
                 >
                   <div
                     className={`p-2 rounded-lg max-w-xs w-auto ${

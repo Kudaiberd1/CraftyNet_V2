@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import type { Post } from "../Menu/Home";
 import api from "../../services/api";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import OnlyNavBar from "../Menu/onlyNavBar";
 import formatDates from "../../services/formatData";
 import { postContext } from "../../App";
@@ -31,6 +31,16 @@ const PostPage = () => {
   const { setPosts } = useContext(postContext);
   const [replyContent, setReplyContent] = useState("");
   const [replyTo, setReplyTo] = useState<number | null>(null);
+
+  const commentsRef = useRef<HTMLDivElement | null>(null);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollTo === "comments") {
+      commentsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location, comments]);
 
   useEffect(() => {
     api
@@ -181,7 +191,14 @@ const PostPage = () => {
               </p>
             </div>
           </div>
-          <div className="shadow-lg p-5 w-full rounded mt-10">
+
+          {/* Comment Section */}
+
+          <div
+            className="shadow-lg p-5 w-full rounded mt-10"
+            ref={commentsRef}
+            id="comments"
+          >
             <div className="p-5">
               <div>
                 {comments?.map((comment) => (
