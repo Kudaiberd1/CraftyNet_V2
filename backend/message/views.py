@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -26,6 +26,21 @@ class MessageApiView(APIView):
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     
+    def patch(self, request, *args, **kwargs):
+        message_id = request.data.get("id")
+        if not message_id:
+            return Response({"error": "Message ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            message = Message.objects.get(id=message_id)
+        except Message.DoesNotExist:
+            return Response({"error": "Message not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = MessageSerializer(message, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, username: str,format=None):
         message_id = request.data.get("id")
