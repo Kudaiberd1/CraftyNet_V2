@@ -168,6 +168,24 @@ const DirectMessages = () => {
     setSelectedId(id);
   };
 
+  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const openMenu = (x: number, y: number) => {
+    setMenuPos({ x, y });
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    timerRef.current = setTimeout(() => {
+      const touch = e.touches[0];
+      openMenu(touch.clientX, touch.clientY);
+    }, 500); // hold for 500ms
+  };
+
+  const handleTouchEnd = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
   const selectedUser = users.find((u) => u.id === selected);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -306,7 +324,6 @@ const DirectMessages = () => {
                   className={`mb-4 ${
                     msg.sender === currentUser?.id ? "flex justify-end" : ""
                   }`}
-                  onClick={() => handlePopUp(msg.id, msg.sender)}
                 >
                   <div
                     className={`p-2 rounded-lg max-w-xs w-auto ${
@@ -314,6 +331,9 @@ const DirectMessages = () => {
                         ? "bg-blue-600 text-white"
                         : "bg-gray-200 text-gray-800"
                     }`}
+                    onContextMenu={() => handlePopUp(msg.id, msg.sender)}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
                   >
                     <p>{msg.content}</p>
                     <p className="text-gray-400 text-2xs">
@@ -336,6 +356,12 @@ const DirectMessages = () => {
                     className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                   >
                     Delete
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  >
+                    Edit
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
