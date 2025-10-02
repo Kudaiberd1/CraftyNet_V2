@@ -40,6 +40,8 @@ const DirectMessages = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [clicked, setClicked] = useState(false);
 
+  const [selectedId, setSelectedId] = useState(-1);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -63,6 +65,7 @@ const DirectMessages = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!messageInput.trim() || !currentUser) return;
 
     const msgToSend: OutgoingMessage = {
@@ -77,8 +80,33 @@ const DirectMessages = () => {
     } else {
       messageQueueRef.current.push(msgToSend);
     }
-
     setMessageInput("");
+    handleMessage();
+  };
+
+  const deleteMessage = (id: number) => {
+    setIsOpen(false);
+    setMessages(messages.filter((message) => message.id != id));
+    api
+      .delete(`/api/message/${currentUser.id}/`, { data: { id: id } })
+      .then(() => console.log("Message deleted"))
+      .catch((err) => console.log(err.message));
+  };
+
+  const handleMessage = async () => {
+    try {
+      const data = {
+        sender: currentUser?.id,
+        resiever: selected,
+        context: "Direct message",
+        link: "/messages",
+      };
+
+      const res = await api.post("/api/inbox/1/", data);
+      console.log("Successfully sent", res);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const connectWebSocket = () => {
@@ -135,7 +163,13 @@ const DirectMessages = () => {
     return () => wsRef.current?.close();
   }, [currentUser, selected]);
 
+  const handlePopUp = (id: number, sender: number) => {
+    if (sender === currentUser?.id) setIsOpen(true);
+    setSelectedId(id);
+  };
+
   const selectedUser = users.find((u) => u.id === selected);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="flex h-screen relative">
@@ -272,7 +306,7 @@ const DirectMessages = () => {
                   className={`mb-4 ${
                     msg.sender === currentUser?.id ? "flex justify-end" : ""
                   }`}
-                  onContextMenu={() => alert("Right click!")}
+                  onClick={() => handlePopUp(msg.id, msg.sender)}
                 >
                   <div
                     className={`p-2 rounded-lg max-w-xs w-auto ${
@@ -291,6 +325,28 @@ const DirectMessages = () => {
             );
           })}
           <div ref={messagesEndRef} />
+          {/* Pop up window to edit or delete message */}
+          {isOpen && (
+            <div className="fixed inset-0 bg-gray/30 backdrop-blur-sm flex items-center justify-center">
+              <div className="bg-white rounded-2xl shadow-lg p-6 w-80">
+                <p className="mb-4">Do you want to delete this message?</p>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => deleteMessage(selectedId)}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Input (fixed at bottom) */}

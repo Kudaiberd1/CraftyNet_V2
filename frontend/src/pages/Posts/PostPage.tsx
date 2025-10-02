@@ -59,7 +59,7 @@ const PostPage = () => {
     api.get("/api/profiles/my/").then((res) => setCurrentUser(res.data));
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, author: number) => {
     e.preventDefault();
     if (!newComment.trim()) return;
     try {
@@ -75,8 +75,25 @@ const PostPage = () => {
           p.id === post?.id ? { ...p, comments_count: p.comments_count + 1 } : p
         )
       );
+      handleMessage(author, "Comment from post");
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleMessage = async (selected: number, context: string) => {
+    try {
+      const data = {
+        sender: currentUser?.id,
+        resiever: selected,
+        context: context,
+        link: `/post/${id.pk}`,
+      };
+
+      const res = await api.post("/api/inbox/1/", data);
+      console.log("Successfully sent", res);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -114,7 +131,11 @@ const PostPage = () => {
     }
   };
 
-  const handleReplySubmit = async (e: React.FormEvent, parentId: number) => {
+  const handleReplySubmit = async (
+    e: React.FormEvent,
+    parentId: number,
+    resiever: number
+  ) => {
     e.preventDefault();
     if (!replyContent.trim()) return;
 
@@ -132,6 +153,7 @@ const PostPage = () => {
           p.id === post?.id ? { ...p, comments_count: p.comments_count + 1 } : p
         )
       );
+      handleMessage(resiever, "Reply from post");
     } catch (err) {
       console.error(err);
     }
@@ -283,7 +305,13 @@ const PostPage = () => {
                         ))}
                         {replyTo === comment.id && (
                           <form
-                            onSubmit={(e) => handleReplySubmit(e, comment.id)}
+                            onSubmit={(e) =>
+                              handleReplySubmit(
+                                e,
+                                comment.id,
+                                comment.sender.id
+                              )
+                            }
                             className="ml-5 mt-2"
                           >
                             <textarea
@@ -307,7 +335,11 @@ const PostPage = () => {
                 ))}
               </div>
               <div className="ml-4">
-                <form onSubmit={handleSubmit}>
+                <form
+                  onSubmit={(e) => {
+                    handleSubmit(e, post?.profile.id);
+                  }}
+                >
                   <textarea
                     id="comment"
                     name="comment"

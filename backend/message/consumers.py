@@ -14,7 +14,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
-        await self.send(json.dumps({"type": "system", "message": f"Connected to {self.room_name}"}))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -47,8 +46,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message(self, sender_id, receiver_id, content):
-        from django.contrib.auth.models import User  # <- import here
-        from .models import Message  # <- import here
+        from django.contrib.auth.models import User 
+        from .models import Message 
         sender = User.objects.get(id=sender_id)
         receiver = User.objects.get(id=receiver_id)
         room = f"{min(sender_id, receiver_id)}_{max(sender_id, receiver_id)}"

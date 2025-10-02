@@ -8,6 +8,7 @@ from .models import *
 from .serializers import *
 from django.contrib.auth.models import User
 from django.db.models import Q
+from rest_framework import status
 
 
 class MessageApiView(APIView):
@@ -24,6 +25,18 @@ class MessageApiView(APIView):
             serializer.save(sender=User.objects.get(id = request.data["sender"]))
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+    
+    
+    def delete(self, request, username: str,format=None):
+        message_id = request.data.get("id")
+        try:
+            message = Message.objects.get(id=message_id)
+        except Message.DoesNotExist:
+            return Response({"error": "Message not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        message.delete()
+        return Response({"message": "Message deleted"}, status=status.HTTP_204_NO_CONTENT)
+        
     
 class UserMessagesView(APIView):
     permission_classes = [IsAuthenticated]
