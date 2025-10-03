@@ -5,6 +5,8 @@ import api from "../../services/api";
 import { formatDate } from "../../services/formatData";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
+import { Pencil } from "lucide-react";
+import { FaTimes } from "react-icons/fa";
 
 interface Message {
   id: number;
@@ -34,6 +36,7 @@ const DirectMessages = () => {
   const [users, setUsers] = useState<User[]>([]);
   const { selected, setSelected } = useContext(SelectedMessageContext);
   const [messageInput, setMessageInput] = useState<string>("");
+  const [messageInputt, setMessageInputt] = useState<string>("");
 
   const wsRef = useRef<WebSocket | null>(null);
   const messageQueueRef = useRef<OutgoingMessage[]>([]);
@@ -65,6 +68,32 @@ const DirectMessages = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (sendOrupdate) {
+      const data = messages.find((m) => m.id == selectedId);
+      const formattedMessage: Message = {
+        id: data?.id,
+        sender: data?.sender,
+        receiver: data?.receiver,
+        content: messageInput,
+        timestamp: data?.timestamp || new Date().toISOString(),
+      };
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === selectedId
+            ? { ...message, content: formattedMessage.content }
+            : message
+        )
+      );
+      api
+        .patch(`/api/message/${currentUser.id}/`, formattedMessage)
+        .then((res) => console.log("Successfully updated", res.data))
+        .catch((err) => console.log("Failed"));
+      setMessageInput("");
+      setMessageInputt("");
+      setSendOrUpdate(false);
+      setSelectedId(-1);
+      return;
+    }
 
     if (!messageInput.trim() || !currentUser) return;
 
@@ -81,6 +110,7 @@ const DirectMessages = () => {
       messageQueueRef.current.push(msgToSend);
     }
     setMessageInput("");
+    setMessageInputt("");
     handleMessage();
   };
 
@@ -189,6 +219,25 @@ const DirectMessages = () => {
   const selectedUser = users.find((u) => u.id === selected);
   const [isOpen, setIsOpen] = useState(false);
 
+  // if true then update else send message
+  const [sendOrupdate, setSendOrUpdate] = useState(false);
+
+  const update = () => {
+    console.log("Woking");
+    setIsOpen(false);
+    const data = messages.find((m) => m.id == selectedId);
+    setSendOrUpdate(true);
+    setMessageInput(data.content);
+    setMessageInputt(data.content);
+  };
+
+  const cancel = () => {
+    setSendOrUpdate(false);
+    setMessageInput("");
+    setMessageInputt("");
+    setSelectedId(-1);
+  };
+
   return (
     <div className="flex h-screen relative">
       {/* Sidebar toggle button (mobile only) */}
@@ -250,7 +299,7 @@ const DirectMessages = () => {
             </Link>
           </div>
         </div>
-        <div className="mt-8">
+        <div className="mt-8" onClick={() => setIsOpen(false)}>
           {users
             .filter((u) => u.id !== currentUser?.id)
             .map((user) => (
@@ -349,7 +398,6 @@ const DirectMessages = () => {
           {isOpen && (
             <div className="fixed inset-0 bg-gray/30 backdrop-blur-sm flex items-center justify-center">
               <div className="bg-white rounded-2xl shadow-lg p-6 w-80">
-                <p className="mb-4">Do you want to delete this message?</p>
                 <div className="flex space-x-2">
                   <button
                     onClick={() => deleteMessage(selectedId)}
@@ -358,7 +406,7 @@ const DirectMessages = () => {
                     Delete
                   </button>
                   <button
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => update()}
                     className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                   >
                     Edit
@@ -374,10 +422,26 @@ const DirectMessages = () => {
             </div>
           )}
         </div>
-
+        {sendOrupdate && (
+          <div className="py-2 mb-0 border-t border-gray-200">
+            <div className="pl-5 flex">
+              <Pencil className="my-auto" />
+              <div className="mx-3 px-3 border-l border-blue-500 bg-blue-300 w-full rounded-sm border-2px">
+                <p className="text-blue-500"> Edit message </p>
+                <h4 className="font-bold"> {messageInputt} </h4>
+              </div>
+              <div
+                className="my-auto mr-3 cursor-pointer"
+                onClick={() => cancel()}
+              >
+                <FaTimes />
+              </div>
+            </div>
+          </div>
+        )}
         {/* Input (fixed at bottom) */}
         {selected !== 0 && (
-          <div className="p-4 border-t bg-white">
+          <div className="p-4 border-t bg-white border-gray-200">
             <form className="flex items-center" onSubmit={handleSubmit}>
               <input
                 value={messageInput}

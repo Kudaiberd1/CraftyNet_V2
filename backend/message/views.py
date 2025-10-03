@@ -51,8 +51,9 @@ class MessageApiView(APIView):
         
         message.delete()
         return Response({"message": "Message deleted"}, status=status.HTTP_204_NO_CONTENT)
+
         
-    
+
 class UserMessagesView(APIView):
     permission_classes = [IsAuthenticated]
 

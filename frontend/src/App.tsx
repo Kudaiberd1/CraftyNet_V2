@@ -78,6 +78,8 @@ function App() {
   useEffect(() => {
     if (localStorage.getItem(ACCESS_TOKEN)) {
       setIsAuthorized(true);
+    } else {
+      localStorage.clear();
     }
     api.get("/api/posts/").then((res) => {
       setPosts(res.data);
@@ -110,7 +112,14 @@ function App() {
                 <Route path="/addPost/" element={<AddPost />} />
                 <Route path="/post/:pk/edit" element={<EditPost />} />
                 <Route path="/post/:pk/delete" element={<DeletePost />} />
-                <Route path="/messages" element={<DirectMessages />} />
+                <Route
+                  path="/messages"
+                  element={
+                    <ProtectedRoute>
+                      <DirectMessages />{" "}
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/chat" element={<ChatDemo />} />
                 <Route
                   path="/my"
